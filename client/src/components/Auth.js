@@ -3,10 +3,12 @@ import Cookies from 'universal-cookie'
 import axios from 'axios'
 import signinImage from '../assets/signup.jpeg'
 
+const cookies = new Cookies()
+
 const initialState = {
   fullName: '',
   username: '',
-  phonenumber: '',
+  phoneNumber: '',
   password: '',
   confirmPassword: '',
   avatarURL: '',
@@ -18,9 +20,34 @@ const Auth = () => {
   const handleChange = (event) => {
     setForm({ ...form, [event.target.name]: event.target.value })
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log(form)
+    const { username, fullName, password, phoneNumber, avatarURL } = form
+
+    const URL = 'http://localhost:5000/auth'
+
+    const {
+      data: { token, userId, hashedPassword },
+    } = await axios.post(`${URL}/${isSignUp ? 'signup' : 'login'}`, {
+      username,
+      fullName,
+      phoneNumber,
+      password,
+      avatarURL,
+    })
+
+    cookies.set('token', token)
+    cookies.set('username', username)
+    cookies.set('fullName', fullName)
+    cookies.set('userId', userId)
+
+    if (isSignUp) {
+      cookies.set('phoneNumber', phoneNumber)
+      cookies.set('hashedPassword', hashedPassword)
+      cookies.set('avatarURL', avatarURL)
+    }
+
+    window.location.reload()
   }
   const switchMode = () => {
     setIsSignUp(!isSignUp)
@@ -55,9 +82,9 @@ const Auth = () => {
             </div>
             {isSignUp && (
               <div className="auth__form-container_fields-content_input">
-                <label htmlFor="phonenumber">Phone Number</label>
+                <label htmlFor="phoneNumber">Phone Number</label>
                 <input
-                  name="phonenumber"
+                  name="phoneNumber"
                   placeholder="Phone Number"
                   type="text"
                   onChange={handleChange}
