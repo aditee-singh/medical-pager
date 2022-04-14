@@ -22,7 +22,7 @@ $ npm run start
 ```
 
 ### Live Preview
-[link to project](https://medical-pager-aditee.netlify.app/)
+[https://medical-pager-aditee.netlify.app/](https://medical-pager-aditee.netlify.app/)
 
 ## Preview
 ![Sign-up Page](sign-up.png)
