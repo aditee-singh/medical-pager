@@ -125,7 +125,6 @@ const ResultsDropdown = ({
           <i>No direct messages found</i>
         </p>
       ) : (
-        directChannels &&
         directChannels?.map((channel, i) => (
           <SearchResult
             channel={channel}

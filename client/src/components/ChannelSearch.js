@@ -6,14 +6,15 @@ import { ResultsDropdown } from './'
 const ChannelSearch = ({ setToggleContainer }) => {
   const { client, setActiveChannel } = useChatContext()
   const [query, setQuery] = useState('')
-  console.log(SearchIcon)
   const [loading, setLoading] = useState(false)
   const [teamChannels, setTeamChannels] = useState([])
   const [directChannels, setDirectChannels] = useState([])
 
   useEffect(() => {
-    setTeamChannels([])
-    setDirectChannels({})
+    if (!query) {
+      setTeamChannels([])
+      setDirectChannels([])
+    }
   }, [query])
 
   const getChannels = async (text) => {
@@ -25,7 +26,7 @@ const ChannelSearch = ({ setToggleContainer }) => {
       })
 
       const userResponse = client.queryUsers({
-        id: { $ne: [client.userID] },
+        id: { $ne: client.userID },
         name: { $autocomplete: text },
       })
 
@@ -34,11 +35,23 @@ const ChannelSearch = ({ setToggleContainer }) => {
         userResponse,
       ])
 
-      if (channels.length) setTeamChannels(channels)
-      if (users.length) setDirectChannels(users)
+      if (channels.length) {
+        setTeamChannels(channels)
+      }
+      if (users.length) {
+        setDirectChannels(users)
+      }
     } catch (error) {
       setQuery('')
     }
+  }
+
+  const onSearch = (event) => {
+    event.preventDefault()
+
+    setLoading(true)
+    setQuery(event.target.value)
+    getChannels(event.target.value)
   }
 
   const setChannel = (channel) => {
@@ -46,26 +59,19 @@ const ChannelSearch = ({ setToggleContainer }) => {
     setActiveChannel(channel)
   }
 
-  const inputChangeHandler = (event) => {
-    event.preventDefault()
-    setLoading(true)
-    setQuery(event.target.value)
-    getChannels(event.target.value)
-  }
-
   return (
     <div className="channel-search__container">
       <div className="channel-search__input__wrapper">
-        <div className="channel-search__input__icon">
+        <div className="channel-serach__input__icon">
           <SearchIcon />
-          <input
-            className="channel-search__input__text"
-            placeholder="Search"
-            value={query}
-            type="text"
-            onChange={inputChangeHandler}
-          />
         </div>
+        <input
+          className="channel-search__input__text"
+          placeholder="Search"
+          type="text"
+          value={query}
+          onChange={onSearch}
+        />
       </div>
       {query && (
         <ResultsDropdown

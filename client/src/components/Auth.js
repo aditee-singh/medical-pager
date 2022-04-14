@@ -24,7 +24,8 @@ const Auth = () => {
     e.preventDefault()
     const { username, password, phoneNumber, avatarURL } = form
 
-    const URL = 'http://localhost:5000/auth'
+    //const URL = 'http://localhost:5000/auth'
+    const URL = 'https://aditee-medical-pager-backend.herokuapp.com/auth'
 
     const {
       data: { token, userId, hashedPassword, fullName },

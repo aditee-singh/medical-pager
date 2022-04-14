@@ -2,11 +2,9 @@ import { useState } from 'react'
 import { ChannelList, useChatContext } from 'stream-chat-react'
 import Cookies from 'universal-cookie'
 import { ChannelSearch, TeamChannelPreview, TeamChannelList } from './'
-// import ChannelSearch from './ChannelSearch'
 import '../App.css'
 import HospitalIcon from '../assets/hospital.png'
 import LogoutIcon from '../assets/logout.png'
-// import TeamChannelList from './TeamChannelList'
 
 const cookies = new Cookies()
 
@@ -70,7 +68,7 @@ const ChannelListContent = ({
       <ChannelListSidebar logout={logout} />
       <div className="channel-list__list__wrapper">
         <CompanyHeader />
-        {/* <ChannelSearch setToggleContainer={setToggleContainer} /> */}
+        <ChannelSearch setToggleContainer={setToggleContainer} />
         <ChannelList
           filters={filters}
           channelRenderFilterFn={customChannelTeamFilter}
@@ -144,16 +142,14 @@ const ChannelListContainer = ({
       <div
         className="channel-list__container-responsive"
         style={{
-          left: toggleContainer ? '0%' : '-89%',
+          left: toggleContainer ? '0%' : '-86%',
           backgroundColor: '#005fff',
         }}
+        onClick={() =>
+          setToggleContainer((prevToggleContainer) => !prevToggleContainer)
+        }
       >
-        <div
-          className="channel-list__container-toggle"
-          onClick={() =>
-            setToggleContainer((prevToggleContainer) => !prevToggleContainer)
-          }
-        ></div>
+        <div className="channel-list__container-toggle"></div>
         <ChannelListContent
           setIsCreating={setIsCreating}
           setCreateType={setCreateType}
