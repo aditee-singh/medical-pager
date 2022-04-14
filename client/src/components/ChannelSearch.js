@@ -1,24 +1,58 @@
 import React, { useState, useEffect } from 'react'
 import { useChatContext } from 'stream-chat-react'
 import { SearchIcon } from '../assets'
+import { ResultsDropdown } from './'
 
-const ChannelSearch = () => {
+const ChannelSearch = ({ setToggleContainer }) => {
+  const { client, setActiveChannel } = useChatContext()
   const [query, setQuery] = useState('')
   console.log(SearchIcon)
   const [loading, setLoading] = useState(false)
+  const [teamChannels, setTeamChannels] = useState([])
+  const [directChannels, setDirectChannels] = useState([])
+
+  useEffect(() => {
+    setTeamChannels([])
+    setDirectChannels({})
+  }, [query])
+
   const getChannels = async (text) => {
     try {
-      //Todo
+      const channelResponse = client.queryChannels({
+        type: 'teams',
+        name: { $autocomplete: text },
+        members: { $in: [client.userID] },
+      })
+
+      const userResponse = client.queryUsers({
+        id: { $ne: [client.userID] },
+        name: { $autocomplete: text },
+      })
+
+      const [channels, { users }] = await Promise.all([
+        channelResponse,
+        userResponse,
+      ])
+
+      if (channels.length) setTeamChannels(channels)
+      if (users.length) setDirectChannels(users)
     } catch (error) {
       setQuery('')
     }
   }
+
+  const setChannel = (channel) => {
+    setQuery('')
+    setActiveChannel(channel)
+  }
+
   const inputChangeHandler = (event) => {
     event.preventDefault()
     setLoading(true)
     setQuery(event.target.value)
     getChannels(event.target.value)
   }
+
   return (
     <div className="channel-search__container">
       <div className="channel-search__input__wrapper">
@@ -33,6 +67,16 @@ const ChannelSearch = () => {
           />
         </div>
       </div>
+      {query && (
+        <ResultsDropdown
+          teamChannels={teamChannels}
+          directChannels={directChannels}
+          loading={loading}
+          setChannel={setChannel}
+          setQuery={setQuery}
+          setToggleContainer={setToggleContainer}
+        />
+      )}
     </div>
   )
 }
