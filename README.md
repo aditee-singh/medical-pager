@@ -1,5 +1,5 @@
 # MedicalPager - chat application
-A group/personal chat application built with React, Node and StreamChat API and twilio API.
+A group/personal chat application built with React, Node, StreamChat API and twilio API.
 
 Medical Pager is a chat application that supports griup chats as well as personal chats. It is built to connect patients with doctors in a fast and efficient way. It also provides functionality to support emoji reactions, replying in threads, sending gifs and also sends SMS notifications when reciever is offline. 
 
